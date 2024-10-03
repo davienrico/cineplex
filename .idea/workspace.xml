@@ -5,23 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="786216fe-ac20-4715-b701-e87ef05bdb1e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/HelloServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/AbbonamentoDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/BigliettoDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/AbbonamentoDAOCookieImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/CookieDAOFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/UtenteDAOCookieImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/DAOFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/FilmDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/GenereDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/ProiezioneDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/RecensioneDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/TipoAbbonamentoDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/UtenteDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/MySQLJDBCDAOFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/UtenteDAOMySQLJDBCImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Abbonamento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Biglietto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Film.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Genere.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Proiezione.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Recensione.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/TipoAbbonamento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/mo/Utente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/HelloServlet.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,26 +55,39 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2mQjkRtBfJJUXvoZXeSeLBqP7Dc" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.cineplex [install].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.cineplex.cineplex.model.dao" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Tomcat 10.1.30" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.30" ALTERNATIVE_JRE_ENABLED="false">
       <deployment>
@@ -62,12 +97,77 @@
           </settings>
         </artifact>
       </deployment>
-      <server-settings />
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="40749c26-3499-4ba4-b4f8-d3f22ef8d76c" />
+      </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
       <predefined_log_file id="Tomcat Manager" />
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="56992" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
       <method v="2">
         <option name="Make" enabled="true" />
         <option name="BuildArtifacts" enabled="true">
@@ -85,6 +185,12 @@
       <option name="presentableId" value="Default" />
       <updated>1727015837073</updated>
       <workItem from="1727015838085" duration="36000" />
+      <workItem from="1727015882113" duration="6013000" />
+      <workItem from="1727451200811" duration="13647000" />
+      <workItem from="1727637919106" duration="6249000" />
+      <workItem from="1727707360760" duration="3799000" />
+      <workItem from="1727821850671" duration="1132000" />
+      <workItem from="1727965337132" duration="144000" />
     </task>
     <servers />
   </component>
