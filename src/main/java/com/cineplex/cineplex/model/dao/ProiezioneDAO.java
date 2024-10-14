@@ -1,30 +1,21 @@
 package com.cineplex.cineplex.model.dao;
 
-import com.cineplex.cineplex.model.mo.Abbonamento;
 import com.cineplex.cineplex.model.mo.Proiezione;
+import com.cineplex.cineplex.model.dao.mySQLJDBCImpl.ProiezioneDAOMySQLJDBCImpl.ConflictingProjectionException;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 public interface ProiezioneDAO {
-        public Proiezione create(
-                Integer idProiezione,
-                Date dataProiezione,
-                Time oraInizio,
-                Integer numeroSala,
-                Integer filmId
+    Proiezione create(Integer idProiezione, Date dataProiezione, Time oraInizio, Integer numeroSala, Integer filmId)
+            throws ConflictingProjectionException;
 
-        );
+    void update(Proiezione proiezione) throws ConflictingProjectionException;
 
-    public void update(Proiezione proiezione);
+    void delete(Proiezione proiezione);
 
-    public void delete(Proiezione proiezione);
+    Proiezione FindById(Integer idProiezione);
 
-    public Proiezione FindById(Integer idProiezione);
-
-    public Proiezione FindByDateTime(Date dataProiezione, Time oraInizio);
-
-    public Proiezione FindBySala(Integer numeroSala);
-
-    public Proiezione FindByFilmId(Integer filmId);
+    List<Proiezione> FindByFilmId(Integer filmId);
 }

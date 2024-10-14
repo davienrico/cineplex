@@ -23,18 +23,13 @@ public class AbbonamentoDAOCookieImpl implements AbbonamentoDAO {
     }
 
     @Override
-    public Abbonamento create(int idAbbonamento, Date dataSottoscrizione, Utente utenteId, TipoAbbonamento tipoAbbonamentoId) {
+    public Abbonamento create(Integer idAbbonamento, Date dataSottoscrizione, Utente utenteId, TipoAbbonamento tipoAbbonamentoId) {
         Abbonamento abbonamento = new Abbonamento(idAbbonamento, dataSottoscrizione, utenteId, tipoAbbonamentoId, false);
         String encodedAbbonamento = encode(abbonamento);
         Cookie cookie = new Cookie("abbonamento", encodedAbbonamento);
         cookie.setMaxAge(24 * 60 * 60); // 1 day
         response.addCookie(cookie);
         return abbonamento;
-    }
-
-    @Override
-    public Abbonamento create(Integer idAbbonamento, Date dataSottoscrizione, Utente utenteId, TipoAbbonamento tipoAbbonamentoId) {
-        return null;
     }
 
     @Override
@@ -54,11 +49,6 @@ public class AbbonamentoDAOCookieImpl implements AbbonamentoDAO {
 
     @Override
     public Abbonamento FindById(Integer idAbbonamento) {
-        return null;
-    }
-
-    @Override
-    public Abbonamento FindById(int idAbbonamento) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

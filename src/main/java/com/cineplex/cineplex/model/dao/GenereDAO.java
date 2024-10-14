@@ -1,5 +1,6 @@
 package com.cineplex.cineplex.model.dao;
 
+import com.cineplex.cineplex.model.dao.mySQLJDBCImpl.GenereDAOMySQLJDBCImpl;
 import com.cineplex.cineplex.model.mo.Abbonamento;
 import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Genere;
@@ -7,19 +8,16 @@ import com.cineplex.cineplex.model.mo.Genere;
 import java.util.List;
 
 public interface GenereDAO {
-        public Genere create(
-                int idGenere,
-                String nomeGenere,
-                List<Film> films
-        );
+        Genere create(int idGenere, String nomeGenere, List<Film> films) throws GenereDAOMySQLJDBCImpl.DuplicateGenreException;
 
-        public void update(Genere genere);
+        void update(Genere genere) throws GenereDAOMySQLJDBCImpl.DuplicateGenreException;
+
 
         public void delete(Genere genere);
 
         public Genere FindById(Integer idGenere);
 
-        public Genere FindByFilm(List<Film> films);
+        public List<Genere> FindByFilm(List<Film> films);
 
         public Genere FindByNomeGenere(String nomeGenere);
 }

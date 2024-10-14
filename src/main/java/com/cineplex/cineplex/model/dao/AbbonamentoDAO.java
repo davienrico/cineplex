@@ -1,5 +1,6 @@
 package com.cineplex.cineplex.model.dao;
 
+import java.util.Date;
 import com.cineplex.cineplex.model.mo.Abbonamento;
 import com.cineplex.cineplex.model.mo.TipoAbbonamento;
 import com.cineplex.cineplex.model.mo.Utente;
@@ -7,8 +8,6 @@ import com.cineplex.cineplex.model.mo.Utente;
 import java.util.Date;
 
 public interface AbbonamentoDAO {
-
-        Abbonamento create(int idAbbonamento, Date dataSottoscrizione, Utente utenteId, TipoAbbonamento tipoAbbonamentoId);
 
         public Abbonamento create(
                 Integer idAbbonamento,
@@ -23,7 +22,6 @@ public interface AbbonamentoDAO {
 
         public Abbonamento FindById(Integer idAbbonamento);
 
-        Abbonamento FindById(int idAbbonamento);
 
         public Abbonamento FindByUserId(Utente utente);
 

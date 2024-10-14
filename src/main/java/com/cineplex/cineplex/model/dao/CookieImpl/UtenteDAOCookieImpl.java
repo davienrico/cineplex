@@ -25,15 +25,17 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
         loggedUser.setTipo(tipo);
 
         Cookie cookie;
-        cookie = new Cookie("LoggedUser",encode(loggedUser));
+        cookie = new Cookie("loggedUser", encode(loggedUser));
         cookie.setPath("/");
         response.addCookie(cookie);
-
 
         return loggedUser;
     }
 
-
+    @Override
+    public Utente authenticate(String username, String password) {
+        return null;
+    }
 
 
     @Override
@@ -48,28 +50,34 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
 
     @Override
     public void delete(Utente loggedUser) {
-        Cookie cookie;
-        cookie = new Cookie("loggedUser", "");
+        Cookie cookie = new Cookie("loggedUser", "");
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+    @Override
+    public void banUtente(int idUtente) {
+
+    }
+
+    @Override
+    public void unbanUtente(int idUtente) {
 
     }
 
 
-    public Utente findLoggedUser(){
+    public Utente findLoggedUser() {
         Cookie[] cookies = request.getCookies();
-        Utente loggedUser = null;
-
-        if(cookies != null) {
-            for (int i = 0; i < cookies.length && loggedUser == null; i++) {
-                if (cookies[i].getName().equals("loggedUser")) {
-                    loggedUser = decode(cookies[i].getValue());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("loggedUser")) {
+                    return decode(cookie.getValue());
                 }
             }
         }
-        return loggedUser;
+        return null;
     }
+
     @Override
     public Utente FindById(Integer idUtente) {
         throw new UnsupportedOperationException("Not supported");
@@ -87,21 +95,22 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
 
     }
 
-    private String encode(Utente loggedUser){
+    private String encode(Utente loggedUser) {
         return loggedUser.getIdUtente() + "#" + loggedUser.getUsername() + "#" + loggedUser.isNewsletter() + "#" + loggedUser.getTipo();
     }
 
 
+
+
     private Utente decode(String encodedLoggedUser) {
         Utente loggedUser = new Utente();
-
         String[] values = encodedLoggedUser.split("#");
-
-        loggedUser.setIdUtente(Integer.parseInt(values[0]));
-        loggedUser.setUsername(values[1]);
-        loggedUser.setNewsletter(Boolean.parseBoolean(values[2]));
-        loggedUser.setTipo(values[3]);
-
+        if (values.length >= 4) {
+            loggedUser.setIdUtente(Integer.parseInt(values[0]));
+            loggedUser.setUsername(values[1]);
+            loggedUser.setNewsletter(Boolean.parseBoolean(values[2]));
+            loggedUser.setTipo(values[3]);
+        }
         return loggedUser;
 
     }

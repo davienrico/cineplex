@@ -1,30 +1,26 @@
 package com.cineplex.cineplex.model.dao;
 
+import com.cineplex.cineplex.model.dao.mySQLJDBCImpl.RecensioneDAOMySQLJDBCImpl;
 import com.cineplex.cineplex.model.mo.Abbonamento;
 import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Recensione;
 import com.cineplex.cineplex.model.mo.Utente;
 
 import java.util.Date;
+import java.util.List;
 
 public interface RecensioneDAO {
-        public Recensione create(
-                Integer idRecensione,
-                Integer valutazione,
-                String titoloRecensione,
-                String testo,
-                Date dataScrittura,
-                Utente utente,
-                Film film
-        );
+    Recensione create(Integer idRecensione, Integer valutazione, String titoloRecensione, String testo,
+                      Utente utente, Film film) throws RecensioneDAOMySQLJDBCImpl.DuplicateReviewException;
 
-    public void update(Recensione recensione);
+    void update(Recensione recensione);
+
 
     public void delete(Recensione recensione);
 
     public Recensione FindById(Integer idRecensione);
 
-    public Recensione FindByUserId(Utente utente);
+    public List<Recensione> FindByUserId(Utente utente);
 
-    public Recensione FindByFilm(Film film);
+    public List<Recensione> FindByFilm(Film film);
 }

@@ -1,6 +1,7 @@
 package com.cineplex.cineplex.model.dao.mySQLJDBCImpl;
 
 import com.cineplex.cineplex.model.dao.*;
+import com.cineplex.cineplex.services.config.Configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -73,7 +74,7 @@ public class MySQLJDBCDAOFactory extends DAOFactory {
 
     @Override
     public FilmDAO getFilmDAO() {
-        return null;
+        return new FilmDAOMySQLJDBCImpl(connection);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class MySQLJDBCDAOFactory extends DAOFactory {
 
     @Override
     public UtenteDAO getUtenteDAO() {
-        return null;
+            return new UtenteDAOMySQLJDBCImpl(connection);
     }
 
 }

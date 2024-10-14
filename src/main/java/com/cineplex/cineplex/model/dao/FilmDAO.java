@@ -1,5 +1,6 @@
 package com.cineplex.cineplex.model.dao;
 
+import com.cineplex.cineplex.model.dao.mySQLJDBCImpl.FilmDAOMySQLJDBCImpl;
 import com.cineplex.cineplex.model.mo.Abbonamento;
 import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Genere;
@@ -9,29 +10,18 @@ import java.util.List;
 
 public interface FilmDAO {
 
-        public Film create(
-                Integer idFilm,
-                String titolo,
-                Date dataInizioDisponibilita,
-                Date dataFineDisponibilita,
-                String percorsoLocandina,
-                Date dataPubblicazione,
-                Integer durataMinuti,
-                String descrizione,
-                String linkTrailerYT,
-                String regista,
-                List<Genere> generi
+    Film create(Integer idFilm, String titolo, Date dataInizioDisponibilita, Date dataFineDisponibilita,
+                String percorsoLocandina, Date dataPubblicazione, Integer durataMinuti, String descrizione,
+                String linkTrailerYT, String regista, List<Genere> generi) throws FilmDAOMySQLJDBCImpl.DuplicateTitleException;
 
-        );
-
-
-    public void update(Film film);
+    void update(Film film) throws FilmDAOMySQLJDBCImpl.DuplicateTitleException;
 
     public void delete(Film film);
 
+    List<Film> findAll() throws Exception;
 
     public Film FindById(Integer idFilm);
-    public Film FindByTitolo(String titolo);
+    List<Film> FindByTitolo(String query) throws Exception;
 
-    public Film FindByGenere(List<Genere> generi);
+    public List<Film> FindByGenere(List<Genere> generi);
 }
