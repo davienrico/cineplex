@@ -7,7 +7,13 @@
             <div class="w-full px-6 py-8">
                 <div id="loginForm">
                     <h2 class="text-center text-3xl font-bold mb-4">Login</h2>
-                    <form action="${pageContext.request.contextPath}/Dispatcher" method="post">
+
+                    <!-- Error message placement -->
+                    <div id="errorMessage" class="mb-4 text-red-500 text-center hidden">
+                        Incorrect username or password. Please try again.
+                    </div>
+
+                    <form action="${pageContext.request.contextPath}/Dispatcher" method="post" id="loginFormElement">
                         <input type="hidden" name="controllerAction" value="HomeManagement.login">
                         <div class="mb-4">
                             <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
@@ -28,8 +34,13 @@
                     </form>
                 </div>
 
+                <!-- Signup form -->
                 <div id="signupForm" class="hidden">
                     <h2 class="text-center text-3xl font-bold mb-4">Sign Up</h2>
+
+                    <!-- Error message placement for signup -->
+                    <div id="signupErrorMessage" class="mb-4 text-red-500 text-center hidden"></div>
+
                     <form action="${pageContext.request.contextPath}/Dispatcher" method="post">
                         <input type="hidden" name="controllerAction" value="HomeManagement.signup">
                         <div class="mb-4">
@@ -77,9 +88,25 @@
     function toggleForms() {
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
-
         loginForm.classList.toggle('hidden');
         signupForm.classList.toggle('hidden');
+    }
+
+    window.onload = function() {
+        const loginError = <%= request.getAttribute("loginError") != null && (Boolean)request.getAttribute("loginError") %>;
+        const signupError = "<%= request.getAttribute("signupError") != null ? request.getAttribute("signupError") : "" %>";
+
+        if (loginError) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.classList.remove('hidden');
+        }
+
+        if (signupError) {
+            const signupErrorMessage = document.getElementById('signupErrorMessage');
+            signupErrorMessage.textContent = signupError;
+            signupErrorMessage.classList.remove('hidden');
+            toggleForms(); // Show signup form if there was an error
+        }
     }
 </script>
 

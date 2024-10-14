@@ -10,38 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="786216fe-ac20-4715-b701-e87ef05bdb1e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/dispatcher/Dispatcher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/exceptions/UserExceptions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/AbbonamentoDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/BigliettoDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/GenereDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/ProiezioneDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/RecensioneDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/TipoAbbonamentoDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/services/config/Configuration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/services/logservice/LogService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/include/footer.inc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/include/header.inc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/login.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/AbbonamentoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/AbbonamentoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/BigliettoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/BigliettoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/AbbonamentoDAOCookieImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/AbbonamentoDAOCookieImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/UtenteDAOCookieImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/CookieImpl/UtenteDAOCookieImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/FilmDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/FilmDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/GenereDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/GenereDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/ProiezioneDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/ProiezioneDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/RecensioneDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/RecensioneDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/TipoAbbonamentoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/TipoAbbonamentoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/UtenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/UtenteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/MySQLJDBCDAOFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/MySQLJDBCDAOFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/UtenteDAOMySQLJDBCImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/UtenteDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/include/header.inc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/include/header.inc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +40,9 @@
     <option name="FILTER_INFO" value="true" />
     <option name="FILTER_DEBUG" value="true" />
     <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -227,7 +204,7 @@
       <workItem from="1728470716893" duration="116000" />
       <workItem from="1728470842470" duration="10637000" />
       <workItem from="1728665375587" duration="367000" />
-      <workItem from="1728921331868" duration="3999000" />
+      <workItem from="1728921331868" duration="7755000" />
     </task>
     <servers />
   </component>

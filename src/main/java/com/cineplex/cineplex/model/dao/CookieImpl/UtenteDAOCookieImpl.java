@@ -24,10 +24,7 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
         loggedUser.setNewsletter(newsletter);
         loggedUser.setTipo(tipo);
 
-        Cookie cookie;
-        cookie = new Cookie("loggedUser", encode(loggedUser));
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        setCookie(loggedUser);
 
         return loggedUser;
     }
@@ -37,15 +34,9 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
         return null;
     }
 
-
     @Override
-    public void update(Utente loggedUser) {
-
-        Cookie cookie;
-        cookie = new Cookie("loggedUser", encode(loggedUser));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
+    public void update(Utente utente) {
+        setCookie(utente);
     }
 
     @Override
@@ -55,6 +46,7 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
         cookie.setPath("/");
         response.addCookie(cookie);
     }
+
     @Override
     public void banUtente(int idUtente) {
 
@@ -64,7 +56,6 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
     public void unbanUtente(int idUtente) {
 
     }
-
 
     public Utente findLoggedUser() {
         Cookie[] cookies = request.getCookies();
@@ -80,38 +71,39 @@ public class UtenteDAOCookieImpl implements UtenteDAO {
 
     @Override
     public Utente FindById(Integer idUtente) {
-        throw new UnsupportedOperationException("Not supported");
+        return null;
     }
 
     @Override
     public Utente FindByUsername(String username) {
-        throw new UnsupportedOperationException("Not supported");
-
+        return null;
     }
 
     @Override
     public Utente FindByEmail(String email) {
-        throw new UnsupportedOperationException("Not supported");
-
+        return null;
     }
 
-    private String encode(Utente loggedUser) {
-        return loggedUser.getIdUtente() + "#" + loggedUser.getUsername() + "#" + loggedUser.isNewsletter() + "#" + loggedUser.getTipo();
+    private void setCookie(Utente utente) {
+        Cookie cookie = new Cookie("loggedUser", encode(utente));
+        cookie.setMaxAge(3600); // 1 hour
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
-
-
+    private String encode(Utente utente) {
+        return utente.getIdUtente() + "#" + utente.getUsername() + "#" + utente.isNewsletter() + "#" + utente.getTipo();
+    }
 
     private Utente decode(String encodedLoggedUser) {
-        Utente loggedUser = new Utente();
+        Utente utente = new Utente();
         String[] values = encodedLoggedUser.split("#");
         if (values.length >= 4) {
-            loggedUser.setIdUtente(Integer.parseInt(values[0]));
-            loggedUser.setUsername(values[1]);
-            loggedUser.setNewsletter(Boolean.parseBoolean(values[2]));
-            loggedUser.setTipo(values[3]);
+            utente.setIdUtente(Integer.parseInt(values[0]));
+            utente.setUsername(values[1]);
+            utente.setNewsletter(Boolean.parseBoolean(values[2]));
+            utente.setTipo(values[3]);
         }
-        return loggedUser;
-
+        return utente;
     }
 }

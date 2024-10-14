@@ -79,7 +79,7 @@ public class HomeManagement {
         String applicationMessage = null;
 
         try {
-            Map sessionFactoryParameters = new HashMap<String, Object>();
+            Map<String, Object> sessionFactoryParameters = new HashMap<>();
             sessionFactoryParameters.put("request", request);
             sessionFactoryParameters.put("response", response);
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, sessionFactoryParameters);
@@ -99,25 +99,29 @@ public class HomeManagement {
                 session.setAttribute("loggedUser", utente);
                 request.setAttribute("loggedOn", true);
 
-                // Use the sessionDAOFactory to set the cookie
                 UtenteDAO sessionUserDAO = sessionDAOFactory.getUtenteDAO();
-                sessionUserDAO.create(
-                        utente.getIdUtente(),
-                        utente.getNome(),
-                        utente.getCognome(),
-                        utente.getUsername(),
-                        utente.getEmail(),
-                        utente.getPassword(),
-                        utente.isNewsletter(),
-                        utente.getTipo()
-                );
+                Utente existingUser = sessionUserDAO.findLoggedUser();
 
+                if (existingUser != null) {
+                    sessionUserDAO.update(utente);
+                } else {
+                    sessionUserDAO.create(
+                            utente.getIdUtente(),
+                            utente.getNome(),
+                            utente.getCognome(),
+                            utente.getUsername(),
+                            utente.getEmail(),
+                            utente.getPassword(),
+                            utente.isNewsletter(),
+                            utente.getTipo()
+                    );
+                }
+
+                request.setAttribute("loginSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } else {
-                applicationMessage = "Invalid username or password";
-                request.setAttribute("loggedOn", false);
+                request.setAttribute("loginError", true);
                 request.setAttribute("viewUrl", "homeManagement/login");
-                request.setAttribute("applicationMessage", applicationMessage);
             }
 
             daoFactory.commitTransaction();
@@ -129,6 +133,7 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.rollbackTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
+                // Log this exception
             }
             throw new RuntimeException(e);
         } finally {
@@ -136,6 +141,7 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.closeTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
             } catch (Throwable t) {
+                // Log this exception
             }
         }
     }
@@ -143,7 +149,6 @@ public class HomeManagement {
     public static void signup(HttpServletRequest request, HttpServletResponse response) {
         DAOFactory sessionDAOFactory = null;
         DAOFactory daoFactory = null;
-        String applicationMessage = null;
 
         try {
             Map sessionFactoryParameters = new HashMap<String, Object>();
@@ -164,23 +169,73 @@ public class HomeManagement {
 
             UtenteDAO utenteDAO = daoFactory.getUtenteDAO();
 
+            // Perform checks
+            if (nome == null || nome.trim().isEmpty() || nome.length() > 50) {
+                request.setAttribute("signupError", "Nome is required and must be 50 characters or less");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (cognome == null || cognome.trim().isEmpty() || cognome.length() > 50) {
+                request.setAttribute("signupError", "Cognome is required and must be 50 characters or less");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (email == null || email.trim().isEmpty() || email.length() > 100 || !isValidEmail(email)) {
+                request.setAttribute("signupError", "Valid email is required and must be 100 characters or less");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (username == null || username.trim().isEmpty() || username.length() > 45) {
+                request.setAttribute("signupError", "Username is required and must be 45 characters or less");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (password == null || password.trim().isEmpty() || password.length() > 255) {
+                request.setAttribute("signupError", "Password is required and must be 255 characters or less");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (utenteDAO.FindByEmail(email) != null) {
+                request.setAttribute("signupError", "Email already exists");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
+            if (utenteDAO.FindByUsername(username) != null) {
+                request.setAttribute("signupError", "Username already exists");
+                request.setAttribute("viewUrl", "homeManagement/login");
+                return;
+            }
+
             try {
                 Utente newUtente = utenteDAO.create(null, nome, cognome, username, email, password, newsletter, "normale");
 
                 HttpSession session = request.getSession(true);
-                request.setAttribute("loggedOn", true);  // Add this line
+                session.setAttribute("loggedUser", newUtente);
+                request.setAttribute("loggedOn", true);
 
-                // Set cookie
-                Cookie cookie = new Cookie("loggedUser", newUtente.getUsername());
-                cookie.setMaxAge(3600); // 1 hour
-                response.addCookie(cookie);
+                UtenteDAO sessionUserDAO = sessionDAOFactory.getUtenteDAO();
+                sessionUserDAO.create(
+                        newUtente.getIdUtente(),
+                        newUtente.getNome(),
+                        newUtente.getCognome(),
+                        newUtente.getUsername(),
+                        newUtente.getEmail(),
+                        newUtente.getPassword(),
+                        newUtente.isNewsletter(),
+                        newUtente.getTipo()
+                );
 
+                request.setAttribute("signupSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } catch (Exception e) {
-                applicationMessage = "Error during registration: " + e.getMessage();
-                request.setAttribute("loggedOn", false);  // Add this line
+                request.setAttribute("signupError", "Error during registration: " + e.getMessage());
                 request.setAttribute("viewUrl", "homeManagement/login");
-                request.setAttribute("applicationMessage", applicationMessage);
             }
 
             daoFactory.commitTransaction();
@@ -202,6 +257,13 @@ public class HomeManagement {
             }
         }
     }
+
+    // Helper method to validate email format
+    private static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
     public static void logout(HttpServletRequest request, HttpServletResponse response) {
 
         DAOFactory sessionDAOFactory = null;
