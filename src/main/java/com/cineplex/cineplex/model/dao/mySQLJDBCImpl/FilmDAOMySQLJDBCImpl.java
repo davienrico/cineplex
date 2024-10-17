@@ -245,7 +245,8 @@ public class FilmDAOMySQLJDBCImpl implements FilmDAO {
         film.setTitolo(rs.getString("titolo"));
         film.setDataInizioDisponibilita(rs.getDate("data_inizio_disponibilita"));
         film.setDataFineDisponibilita(rs.getDate("data_fine_disponibilita"));
-        film.setPercorsoLocandina(rs.getString("percorso_locandina"));
+        String percorsoLocandina = rs.getString("percorso_locandina");
+        film.setPercorsoLocandina(percorsoLocandina);
         film.setDataPubblicazione(rs.getDate("data_pubblicazione"));
         film.setDurataMinuti(rs.getInt("durata_minuti"));
         film.setDescrizione(rs.getString("descrizione"));

@@ -1,3 +1,5 @@
+<%@ page import="com.cineplex.cineplex.model.mo.Film" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="/include/header.inc" %>
 
@@ -10,6 +12,38 @@
 <div class="container mx-auto mt-8">
     <h1 class="text-3xl font-bold mb-4">Welcome to Cineplex</h1>
     <p class="text-lg">Enjoy the latest movies and exclusive content.</p>
+</div>
+
+
+<div class="container mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-4">Featured Films</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <%
+            List<Film> films = (List<Film>) request.getAttribute("films");
+            if (films != null && !films.isEmpty()) {
+                for (Film film : films) {
+        %>
+        <a href="<%= request.getContextPath() %>/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="<%= request.getContextPath() %><%= film.getPercorsoLocandina() %>"
+                     alt="<%= film.getTitolo() %>"
+                     class="w-full h-48 object-cover"
+                     onerror="this.onerror=null; this.src='<%= request.getContextPath() %>/images/placeholder.jpg';">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2"><%= film.getTitolo() %></h3>
+                    <p class="text-gray-600"><%= film.getDataPubblicazione().getYear() + 1900 %></p>
+                </div>
+            </div>
+        </a>
+        <%
+            }
+        } else {
+        %>
+        <p>No films available at the moment.</p>
+        <%
+            }
+        %>
+    </div>
 </div>
 
 <script>

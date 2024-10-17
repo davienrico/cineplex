@@ -1,5 +1,7 @@
 package com.cineplex.cineplex.controller;
 
+import com.cineplex.cineplex.model.dao.FilmDAO;
+import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Utente;
 import com.cineplex.cineplex.model.dao.DAOFactory;
 import com.cineplex.cineplex.model.dao.UtenteDAO;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +48,14 @@ public class HomeManagement {
             }
             request.setAttribute("loggedOn", isLoggedOn);
 
-            // Add any other logic needed for the home page view here
+            // Fetch all films
+            FilmDAO filmDAO = daoFactory.getFilmDAO();
+            List<Film> films = filmDAO.findAll();
+            System.out.println("Debug: Number of films fetched: " + films.size());
+            for (Film film : films) {
+                System.out.println("Debug: Film " + film.getTitolo() + " - percorsoLocandina: " + film.getPercorsoLocandina());
+            }
+            request.setAttribute("films", films);
 
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
