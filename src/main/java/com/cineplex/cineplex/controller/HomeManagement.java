@@ -1,10 +1,10 @@
 package com.cineplex.cineplex.controller;
 
-import com.cineplex.cineplex.model.dao.FilmDAO;
 import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Utente;
 import com.cineplex.cineplex.model.dao.DAOFactory;
 import com.cineplex.cineplex.model.dao.UtenteDAO;
+import com.cineplex.cineplex.model.dao.FilmDAO;
 import com.cineplex.cineplex.services.config.Configuration;
 import com.cineplex.cineplex.services.logservice.LogService;
 
@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HomeManagement {
+
 
     public static void view(HttpServletRequest request, HttpServletResponse response) {
         DAOFactory sessionDAOFactory = null;
@@ -49,13 +50,7 @@ public class HomeManagement {
             request.setAttribute("loggedOn", isLoggedOn);
 
             // Fetch all films
-            FilmDAO filmDAO = daoFactory.getFilmDAO();
-            List<Film> films = filmDAO.findAll();
-            System.out.println("Debug: Number of films fetched: " + films.size());
-            for (Film film : films) {
-                System.out.println("Debug: Film " + film.getTitolo() + " - percorsoLocandina: " + film.getPercorsoLocandina());
-            }
-            request.setAttribute("films", films);
+            fetchAndSetFilms(request, daoFactory);
 
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
@@ -127,6 +122,7 @@ public class HomeManagement {
                     );
                 }
 
+                fetchAndSetFilms(request, daoFactory);
                 request.setAttribute("loginSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } else {
@@ -143,7 +139,6 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.rollbackTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
-                // Log this exception
             }
             throw new RuntimeException(e);
         } finally {
@@ -151,7 +146,6 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.closeTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
             } catch (Throwable t) {
-                // Log this exception
             }
         }
     }
@@ -241,6 +235,7 @@ public class HomeManagement {
                         newUtente.getTipo()
                 );
 
+                fetchAndSetFilms(request, daoFactory);
                 request.setAttribute("signupSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } catch (Exception e) {
@@ -268,15 +263,9 @@ public class HomeManagement {
         }
     }
 
-    // Helper method to validate email format
-    private static boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
-    }
-
     public static void logout(HttpServletRequest request, HttpServletResponse response) {
-
         DAOFactory sessionDAOFactory = null;
+        DAOFactory daoFactory = null;
         Logger logger = LogService.getApplicationLogger();
 
         try {
@@ -309,6 +298,12 @@ public class HomeManagement {
             request.setAttribute("loggedOn", false);
             request.setAttribute("loggedUser", null);
 
+            // Fetch films after logout
+            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
+            daoFactory.beginTransaction();
+            fetchAndSetFilms(request, daoFactory);
+            daoFactory.commitTransaction();
+
             // Set view url for redirection
             request.setAttribute("viewUrl", "homeManagement/view");
 
@@ -316,19 +311,31 @@ public class HomeManagement {
             logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+                if (daoFactory != null) daoFactory.rollbackTransaction();
             } catch (Throwable t) {
-                // Log this exception as well
                 logger.log(Level.SEVERE, "Rollback Error", t);
             }
             throw new RuntimeException(e);
-
         } finally {
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
+                if (daoFactory != null) daoFactory.closeTransaction();
             } catch (Throwable t) {
-                // Log this exception
                 logger.log(Level.SEVERE, "Close Transaction Error", t);
             }
         }
+    }
+
+    // Helper method to validate email format
+    private static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
+
+    private static void fetchAndSetFilms(HttpServletRequest request, DAOFactory daoFactory) throws Exception {
+        FilmDAO filmDAO = daoFactory.getFilmDAO();
+        List<Film> films = filmDAO.findAll();
+        request.setAttribute("films", films);
     }
 }
