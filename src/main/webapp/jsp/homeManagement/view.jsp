@@ -15,23 +15,23 @@
 </div>
 
 
-<div class="container mx-auto mt-8">
-    <h2 class="text-2xl font-bold mb-4">Featured Films</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div class="container mx-auto mt-8 px-4">
+    <h2 class="text-2xl font-bold mb-6">Featured Films</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <%
             List<Film> films = (List<Film>) request.getAttribute("films");
             if (films != null && !films.isEmpty()) {
                 for (Film film : films) {
         %>
         <a href="<%= request.getContextPath() %>/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden h-80 transition duration-300 ease-in-out transform hover:scale-105">
                 <img src="<%= request.getContextPath() %><%= film.getPercorsoLocandina() %>"
                      alt="<%= film.getTitolo() %>"
-                     class="w-full h-48 object-cover"
+                     class="w-full h-60 object-cover"
                      onerror="this.onerror=null; this.src='<%= request.getContextPath() %>/images/placeholder.jpg';">
                 <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2"><%= film.getTitolo() %></h3>
-                    <p class="text-gray-600"><%= film.getDataPubblicazione().getYear() + 1900 %></p>
+                    <h3 class="font-bold text-lg mb-1 truncate"><%= film.getTitolo() %></h3>
+                    <p class="text-gray-600 text-sm"><%= film.getDataPubblicazione().getYear() + 1900 %></p>
                 </div>
             </div>
         </a>
@@ -39,7 +39,7 @@
             }
         } else {
         %>
-        <p>No films available at the moment.</p>
+        <p class="col-span-full text-center text-gray-500">No films available at the moment.</p>
         <%
             }
         %>

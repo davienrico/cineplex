@@ -10,12 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="786216fe-ac20-4715-b701-e87ef05bdb1e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/FilmManagement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/jsp/filmManagement/film.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codebase.md" beforeDir="false" afterPath="$PROJECT_DIR$/codebase.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/filmManagement/film.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/filmManagement/film.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -206,6 +203,7 @@
       <workItem from="1728470842470" duration="10637000" />
       <workItem from="1728665375587" duration="367000" />
       <workItem from="1728921331868" duration="7755000" />
+      <workItem from="1729347661147" duration="1125000" />
     </task>
     <servers />
   </component>

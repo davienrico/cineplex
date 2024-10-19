@@ -274,6 +274,8 @@ build/
       <change afterPath="$PROJECT_DIR$/src/main/webapp/jsp/filmManagement/film.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1205,6 +1207,10 @@ public class HomeManagement {
             // Fetch all films
             FilmDAO filmDAO = daoFactory.getFilmDAO();
             List<Film> films = filmDAO.findAll();
+            System.out.println("Debug: Number of films fetched: " + films.size());
+            for (Film film : films) {
+                System.out.println("Debug: Film " + film.getTitolo() + " - percorsoLocandina: " + film.getPercorsoLocandina());
+            }
             request.setAttribute("films", films);
 
             daoFactory.commitTransaction();
@@ -2810,7 +2816,8 @@ public class FilmDAOMySQLJDBCImpl implements FilmDAO {
         film.setTitolo(rs.getString("titolo"));
         film.setDataInizioDisponibilita(rs.getDate("data_inizio_disponibilita"));
         film.setDataFineDisponibilita(rs.getDate("data_fine_disponibilita"));
-        film.setPercorsoLocandina(rs.getString("percorso_locandina"));
+        String percorsoLocandina = rs.getString("percorso_locandina");
+        film.setPercorsoLocandina(percorsoLocandina);
         film.setDataPubblicazione(rs.getDate("data_pubblicazione"));
         film.setDurataMinuti(rs.getInt("durata_minuti"));
         film.setDescrizione(rs.getString("descrizione"));
@@ -5476,17 +5483,21 @@ This is a binary file of the type: Image
     <p class="text-lg">Enjoy the latest movies and exclusive content.</p>
 </div>
 
+
 <div class="container mx-auto mt-8">
     <h2 class="text-2xl font-bold mb-4">Featured Films</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <%
             List<Film> films = (List<Film>) request.getAttribute("films");
-            if (films != null) {
+            if (films != null && !films.isEmpty()) {
                 for (Film film : films) {
         %>
-        <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
+        <a href="<%= request.getContextPath() %>/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="<%= film.getPercorsoLocandina() %>" alt="<%= film.getTitolo() %>" class="w-full h-48 object-cover">
+                <img src="<%= request.getContextPath() %><%= film.getPercorsoLocandina() %>"
+                     alt="<%= film.getTitolo() %>"
+                     class="w-full h-48 object-cover"
+                     onerror="this.onerror=null; this.src='<%= request.getContextPath() %>/images/placeholder.jpg';">
                 <div class="p-4">
                     <h3 class="font-bold text-lg mb-2"><%= film.getTitolo() %></h3>
                     <p class="text-gray-600"><%= film.getDataPubblicazione().getYear() + 1900 %></p>
@@ -5494,7 +5505,11 @@ This is a binary file of the type: Image
             </div>
         </a>
         <%
-                }
+            }
+        } else {
+        %>
+        <p>No films available at the moment.</p>
+        <%
             }
         %>
     </div>
@@ -5539,6 +5554,11 @@ This is a binary file of the type: Image
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/images/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>
 ```

@@ -6,27 +6,46 @@
     Film film = (Film) request.getAttribute("film");
 %>
 
-<div class="container mx-auto mt-8">
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="md:flex">
-            <div class="md:flex-shrink-0">
-                <img class="h-48 w-full object-cover md:w-48" src="<%= film.getPercorsoLocandina() %>" alt="<%= film.getTitolo() %>">
+<div class="container mx-auto mt-8 px-4">
+    <div class="flex flex-col md:flex-row md:space-x-8">
+        <!-- Left column: Poster and Title -->
+        <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col">
+            <div class="relative rounded-lg overflow-hidden flex-grow">
+                <img src="<%= request.getContextPath() %><%= film.getPercorsoLocandina() %>" alt="<%= film.getTitolo() %>" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black to-transparent">
+                    <h1 class="text-3xl font-bold text-white text-center px-4 pb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                        <%= film.getTitolo() %>
+                    </h1>
+                </div>
             </div>
-            <div class="p-8">
-                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold"><%= film.getDataPubblicazione().getYear() + 1900 %></div>
-                <h1 class="mt-1 text-3xl leading-tight font-bold text-gray-900"><%= film.getTitolo() %></h1>
-                <p class="mt-2 text-gray-600"><%= film.getDescrizione() %></p>
-                <div class="mt-4">
-                    <span class="text-gray-700 font-bold">Director:</span>
-                    <span class="text-gray-600"><%= film.getRegista() %></span>
+        </div>
+
+        <!-- Right column: Info and Trailer -->
+        <div class="md:w-2/3 flex flex-col">
+            <div class="bg-white rounded-lg shadow-md p-6 flex-grow flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4">Film Details</h2>
+                <p class="mb-2"><strong>Duration:</strong> <%= film.getDurataMinuti() %> minutes</p>
+                <p class="mb-4"><strong>Director:</strong> <%= film.getRegista() %></p>
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-2">Description</h3>
+                    <p><%= film.getDescrizione() %></p>
                 </div>
-                <div class="mt-2">
-                    <span class="text-gray-700 font-bold">Duration:</span>
-                    <span class="text-gray-600"><%= film.getDurataMinuti() %> minutes</span>
+
+                <h3 class="text-xl font-semibold mb-4">Trailer</h3>
+                <div class="relative flex-grow" style="padding-top: 56.25%;">
+                    <iframe
+                            src="<%= film.getLinkTrailerYt() %>"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            class="absolute top-0 left-0 w-full h-full rounded-lg"
+                    ></iframe>
                 </div>
-                <div class="mt-4">
-                    <a href="<%= film.getLinkTrailerYt() %>" target="_blank" class="inline-block bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Watch Trailer</a>
-                </div>
+
+                <!-- Buy Tickets Button -->
+                <a href="#" class="block w-full bg-blue-500 text-white text-center font-bold py-3 px-4 rounded-lg hover:bg-blue-600 transition duration-300 mt-6">
+                    Buy Tickets
+                </a>
             </div>
         </div>
     </div>
