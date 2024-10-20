@@ -269,7 +269,15 @@ build/
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="786216fe-ac20-4715-b701-e87ef05bdb1e" name="Changes" comment="" />
+    <list default="true" id="786216fe-ac20-4715-b701-e87ef05bdb1e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codebase.md" beforeDir="false" afterPath="$PROJECT_DIR$/codebase.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/controller/HomeManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/FilmDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/FilmDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cineplex/cineplex/model/dao/mySQLJDBCImpl/FilmDAOMySQLJDBCImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/include/header.inc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/include/header.inc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/homeManagement/view.jsp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -459,6 +467,7 @@ build/
       <workItem from="1728665375587" duration="367000" />
       <workItem from="1728921331868" duration="7755000" />
       <workItem from="1729347661147" duration="1409000" />
+      <workItem from="1729365649026" duration="5663000" />
     </task>
     <servers />
   </component>
@@ -1149,11 +1158,11 @@ public class FilmManagement {
 ```java
 package com.cineplex.cineplex.controller;
 
-import com.cineplex.cineplex.model.dao.FilmDAO;
 import com.cineplex.cineplex.model.mo.Film;
 import com.cineplex.cineplex.model.mo.Utente;
 import com.cineplex.cineplex.model.dao.DAOFactory;
 import com.cineplex.cineplex.model.dao.UtenteDAO;
+import com.cineplex.cineplex.model.dao.FilmDAO;
 import com.cineplex.cineplex.services.config.Configuration;
 import com.cineplex.cineplex.services.logservice.LogService;
 
@@ -1162,6 +1171,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1197,14 +1208,8 @@ public class HomeManagement {
             }
             request.setAttribute("loggedOn", isLoggedOn);
 
-            // Fetch all films
-            FilmDAO filmDAO = daoFactory.getFilmDAO();
-            List<Film> films = filmDAO.findAll();
-            System.out.println("Debug: Number of films fetched: " + films.size());
-            for (Film film : films) {
-                System.out.println("Debug: Film " + film.getTitolo() + " - percorsoLocandina: " + film.getPercorsoLocandina());
-            }
-            request.setAttribute("films", films);
+            // Fetch featured films
+            fetchAndSetFeaturedFilms(request, daoFactory);
 
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
@@ -1276,6 +1281,7 @@ public class HomeManagement {
                     );
                 }
 
+                fetchAndSetFeaturedFilms(request, daoFactory);
                 request.setAttribute("loginSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } else {
@@ -1292,7 +1298,6 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.rollbackTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
-                // Log this exception
             }
             throw new RuntimeException(e);
         } finally {
@@ -1300,7 +1305,6 @@ public class HomeManagement {
                 if (daoFactory != null) daoFactory.closeTransaction();
                 if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
             } catch (Throwable t) {
-                // Log this exception
             }
         }
     }
@@ -1390,6 +1394,7 @@ public class HomeManagement {
                         newUtente.getTipo()
                 );
 
+                fetchAndSetFeaturedFilms(request, daoFactory);
                 request.setAttribute("signupSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } catch (Exception e) {
@@ -1417,15 +1422,9 @@ public class HomeManagement {
         }
     }
 
-    // Helper method to validate email format
-    private static boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
-    }
-
     public static void logout(HttpServletRequest request, HttpServletResponse response) {
-
         DAOFactory sessionDAOFactory = null;
+        DAOFactory daoFactory = null;
         Logger logger = LogService.getApplicationLogger();
 
         try {
@@ -1437,16 +1436,13 @@ public class HomeManagement {
 
             UtenteDAO sessionUserDAO = sessionDAOFactory.getUtenteDAO();
 
-            // Delete the user cookie
             sessionUserDAO.delete(null);
 
-            // Manually delete the LoggedUser cookie
             Cookie cookie = new Cookie("LoggedUser", "");
             cookie.setMaxAge(0);
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            // Invalidate the session
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
@@ -1454,29 +1450,93 @@ public class HomeManagement {
 
             sessionDAOFactory.commitTransaction();
 
-            // Clear session attributes
             request.setAttribute("loggedOn", false);
             request.setAttribute("loggedUser", null);
 
-            // Set view url for redirection
+            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
+            daoFactory.beginTransaction();
+            fetchAndSetFeaturedFilms(request, daoFactory);
+            daoFactory.commitTransaction();
+
             request.setAttribute("viewUrl", "homeManagement/view");
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+                if (daoFactory != null) daoFactory.rollbackTransaction();
             } catch (Throwable t) {
-                // Log this exception as well
                 logger.log(Level.SEVERE, "Rollback Error", t);
             }
             throw new RuntimeException(e);
-
         } finally {
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
+                if (daoFactory != null) daoFactory.closeTransaction();
             } catch (Throwable t) {
-                // Log this exception
                 logger.log(Level.SEVERE, "Close Transaction Error", t);
+            }
+        }
+    }
+
+    // Helper method to validate email format
+    private static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
+
+    private static void fetchAndSetFilms(HttpServletRequest request, DAOFactory daoFactory) throws Exception {
+        FilmDAO filmDAO = daoFactory.getFilmDAO();
+        List<Film> films = filmDAO.findAll();
+        request.setAttribute("films", films);
+    }
+
+    private static void fetchAndSetFeaturedFilms(HttpServletRequest request, DAOFactory daoFactory) throws Exception {
+        FilmDAO filmDAO = daoFactory.getFilmDAO();
+        List<Film> featuredFilms = filmDAO.findFeaturedFilms(); // You'll need to implement this method in FilmDAO
+        request.setAttribute("featuredFilms", featuredFilms);
+    }
+
+    public static void searchFilms(HttpServletRequest request, HttpServletResponse response) {
+        DAOFactory daoFactory = null;
+        String applicationMessage = null;
+
+        try {
+            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
+            daoFactory.beginTransaction();
+
+            FilmDAO filmDAO = daoFactory.getFilmDAO();
+
+            String title = request.getParameter("title");
+            String dateStr = request.getParameter("date");
+            Date date = null;
+            if (dateStr != null && !dateStr.isEmpty()) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                date = sdf.parse(dateStr);
+            }
+
+            List<Film> searchResults = filmDAO.searchFilms(title, date);
+
+            fetchAndSetFeaturedFilms(request, daoFactory);
+
+            daoFactory.commitTransaction();
+
+            request.setAttribute("films", searchResults);
+            request.setAttribute("searchPerformed", true);
+            request.setAttribute("viewUrl", "homeManagement/view");
+
+        } catch (Exception e) {
+            LogService.getApplicationLogger().log(Level.SEVERE, "Controller Error", e);
+            try {
+                if (daoFactory != null) daoFactory.rollbackTransaction();
+            } catch (Throwable t) {
+            }
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (daoFactory != null) daoFactory.closeTransaction();
+            } catch (Throwable t) {
             }
         }
     }
@@ -2081,6 +2141,11 @@ public interface FilmDAO {
     List<Film> FindByTitolo(String query) throws Exception;
 
     public List<Film> FindByGenere(List<Genere> generi);
+
+    List<Film> searchFilms(String title, Date date) throws Exception;
+
+    List<Film> findFeaturedFilms() throws Exception;
+
 }
 
 ```
@@ -2882,6 +2947,83 @@ public class FilmDAOMySQLJDBCImpl implements FilmDAO {
         public DuplicateTitleException(String message) {
             super(message);
         }
+    }
+
+    @Override
+    public List<Film> searchFilms(String title, Date date) throws Exception {
+        List<Film> films = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            StringBuilder sql = new StringBuilder("SELECT DISTINCT f.* FROM film f ");
+            sql.append("LEFT JOIN proiezione p ON f.id_film = p.film_id ");
+            sql.append("WHERE f.deleted = 'n' ");
+
+            List<Object> params = new ArrayList<>();
+
+            if (title != null && !title.trim().isEmpty()) {
+                sql.append("AND f.titolo LIKE ? ");
+                params.add("%" + title + "%");
+            }
+
+            if (date != null) {
+                sql.append("AND p.data_proiezione = ? ");
+                params.add(new java.sql.Date(date.getTime()));
+            }
+
+            sql.append("ORDER BY f.titolo");
+
+            pstmt = connection.prepareStatement(sql.toString());
+
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Film film = read(rs);
+                film.setGeneri(getGenresForFilm(film.getIdFilm()));
+                films.add(film);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+
+        return films;
+    }
+
+    @Override
+    public List<Film> findFeaturedFilms() throws Exception {
+        List<Film> featuredFilms = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT DISTINCT f.*, MIN(p.data_proiezione) as next_projection " +
+                    "FROM film f " +
+                    "JOIN proiezione p ON f.id_film = p.film_id " +
+                    "WHERE f.deleted = 'n' " +
+                    "AND p.data_proiezione >= CURDATE() " +
+                    "GROUP BY f.id_film " +
+                    "ORDER BY next_projection ASC ";
+
+            pstmt = connection.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Film film = read(rs);
+                film.setGeneri(getGenresForFilm(film.getIdFilm()));
+                featuredFilms.add(film);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+
+        return featuredFilms;
     }
 }
 ```
@@ -5256,13 +5398,12 @@ This is a binary file of the type: Image
     <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
             <a href="${pageContext.request.contextPath}/Dispatcher" class="logo">Cineplex</a>
-            <div class="flex items-center space-x-4">
-                <% if (!loggedOn) { %>
-                    <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=HomeManagement.loginView"
-                       class="login-signup-btn">
-                        Login/SignUp
-                    </a>
-                <% } else { %>
+            <div class="flex items-center space-x-6"> <!-- Increased space between items -->
+                <% if (loggedOn) { %>
+                    <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=BigliettoManagement.viewMyTickets"
+                       class="text-gray-600 hover:text-gray-900">I miei biglietti</a>
+                    <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=AbbonamentoManagement.viewSubscription"
+                       class="text-gray-600 hover:text-gray-900">Abbonamento</a>
                     <div id="userMenuContainer" class="relative">
                         <button onclick="toggleUserMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -5270,42 +5411,45 @@ This is a binary file of the type: Image
                             </svg>
                         </button>
                         <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=UtenteManagement.profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profilo</a>
-                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=BigliettoManagement.viewMyTickets" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">I miei biglietti</a>
-                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=RecensioneManagement.insertReview" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Inserisci recensione</a>
-                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=AbbonamentoManagement.viewSubscription" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Abbonamento</a>
-                                <% if (loggedUser != null && "admin".equalsIgnoreCase(loggedUser.getTipo())) { %>
-                                    <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=AdminManagement.console" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Console admin</a>
-                                <% } %>
-                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=HomeManagement.logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                            <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=UtenteManagement.profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profilo</a>
+                            <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=RecensioneManagement.insertReview" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Inserisci recensione</a>
+                            <% if (loggedUser != null && "admin".equalsIgnoreCase(loggedUser.getTipo())) { %>
+                                <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=AdminManagement.console" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Console admin</a>
                             <% } %>
+                            <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=HomeManagement.logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
                         </div>
                     </div>
-                </div>
+                <% } else { %>
+                    <a href="${pageContext.request.contextPath}/Dispatcher?controllerAction=HomeManagement.loginView"
+                       class="login-signup-btn">
+                        Login/SignUp
+                    </a>
+                <% } %>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
-    <style>
-        .login-signup-btn {
-            background-color: #3490dc;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        .login-signup-btn:hover {
-            background-color: #2779bd;
-        }
-    </style>
+<style>
+    .login-signup-btn {
+        background-color: #3490dc;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    .login-signup-btn:hover {
+        background-color: #2779bd;
+    }
+</style>
 
-    <script>
-        function toggleUserMenu() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('hidden');
-        }
-    </script>
+<script>
+    function toggleUserMenu() {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.toggle('hidden');
+    }
+</script>
 </body>
 </html>
 ```
@@ -5526,19 +5670,33 @@ This is a binary file of the type: Image
     </div>
 </div>
 
-<div class="container mx-auto mt-8">
-    <h1 class="text-3xl font-bold mb-4">Welcome to Cineplex</h1>
-    <p class="text-lg">Enjoy the latest movies and exclusive content.</p>
-</div>
-
 
 <div class="container mx-auto mt-8 px-4">
-    <h2 class="text-2xl font-bold mb-6">Featured Films</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <h2 class="text-3xl font-bold mb-6 text-center">Ricerca Film</h2>
+    <form action="${pageContext.request.contextPath}/Dispatcher" method="get" class="mb-8">
+        <input type="hidden" name="controllerAction" value="HomeManagement.searchFilms">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-grow">
+                <input type="text" name="title" placeholder="Ricerca titolo" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <select name="date" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Seleziona data</option>
+                    <!-- We'll populate this with JavaScript -->
+                </select>
+            </div>
+            <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">Search</button>
+        </div>
+    </form>
+
+    <!-- Search Results Section -->
+    <% if (request.getAttribute("searchPerformed") != null && (Boolean)request.getAttribute("searchPerformed")) { %>
+    <h2 class="text-3xl font-bold mb-8 text-center">Risultati Ricerca</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
         <%
-            List<Film> films = (List<Film>) request.getAttribute("films");
-            if (films != null && !films.isEmpty()) {
-                for (Film film : films) {
+            List<Film> searchResults = (List<Film>) request.getAttribute("films");
+            if (searchResults != null && !searchResults.isEmpty()) {
+                for (Film film : searchResults) {
         %>
         <a href="<%= request.getContextPath() %>/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
             <div class="bg-white rounded-lg shadow-md overflow-hidden h-80 transition duration-300 ease-in-out transform hover:scale-105">
@@ -5556,7 +5714,38 @@ This is a binary file of the type: Image
             }
         } else {
         %>
-        <p class="col-span-full text-center text-gray-500">No films available at the moment.</p>
+        <p class="col-span-full text-center text-gray-500">Nessun film trovato.</p>
+        <%
+            }
+        %>
+    </div>
+    <% } %>
+
+    <!-- Featured Films Section -->
+    <h2 class="text-3xl font-bold mb-8 text-center">Film in programmazione</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <%
+            List<Film> featuredFilms = (List<Film>) request.getAttribute("featuredFilms");
+            if (featuredFilms != null && !featuredFilms.isEmpty()) {
+                for (Film film : featuredFilms) {
+        %>
+        <a href="<%= request.getContextPath() %>/Dispatcher?controllerAction=FilmManagement.viewFilm&filmId=<%= film.getIdFilm() %>" class="block">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden h-80 transition duration-300 ease-in-out transform hover:scale-105">
+                <img src="<%= request.getContextPath() %><%= film.getPercorsoLocandina() %>"
+                     alt="<%= film.getTitolo() %>"
+                     class="w-full h-60 object-cover"
+                     onerror="this.onerror=null; this.src='<%= request.getContextPath() %>/images/placeholder.jpg';">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate"><%= film.getTitolo() %></h3>
+                    <p class="text-gray-600 text-sm"><%= film.getDataPubblicazione().getYear() + 1900 %></p>
+                </div>
+            </div>
+        </a>
+        <%
+            }
+        } else {
+        %>
+        <p class="col-span-full text-center text-gray-500">Nessun film in programmazione.</p>
         <%
             }
         %>
@@ -5573,6 +5762,18 @@ This is a binary file of the type: Image
             setTimeout(() => {
                 successPopup.classList.add('hidden');
             }, 3000);
+        }
+
+        // Populate the date dropdown
+        const dateSelect = document.querySelector('select[name="date"]');
+        const today = new Date();
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const option = document.createElement('option');
+            option.value = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+            option.textContent = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            dateSelect.appendChild(option);
         }
     }
 </script>

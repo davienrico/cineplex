@@ -319,4 +319,81 @@ public class FilmDAOMySQLJDBCImpl implements FilmDAO {
             super(message);
         }
     }
+
+    @Override
+    public List<Film> searchFilms(String title, Date date) throws Exception {
+        List<Film> films = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            StringBuilder sql = new StringBuilder("SELECT DISTINCT f.* FROM film f ");
+            sql.append("LEFT JOIN proiezione p ON f.id_film = p.film_id ");
+            sql.append("WHERE f.deleted = 'n' ");
+
+            List<Object> params = new ArrayList<>();
+
+            if (title != null && !title.trim().isEmpty()) {
+                sql.append("AND f.titolo LIKE ? ");
+                params.add("%" + title + "%");
+            }
+
+            if (date != null) {
+                sql.append("AND p.data_proiezione = ? ");
+                params.add(new java.sql.Date(date.getTime()));
+            }
+
+            sql.append("ORDER BY f.titolo");
+
+            pstmt = connection.prepareStatement(sql.toString());
+
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Film film = read(rs);
+                film.setGeneri(getGenresForFilm(film.getIdFilm()));
+                films.add(film);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+
+        return films;
+    }
+
+    @Override
+    public List<Film> findFeaturedFilms() throws Exception {
+        List<Film> featuredFilms = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT DISTINCT f.*, MIN(p.data_proiezione) as next_projection " +
+                    "FROM film f " +
+                    "JOIN proiezione p ON f.id_film = p.film_id " +
+                    "WHERE f.deleted = 'n' " +
+                    "AND p.data_proiezione >= CURDATE() " +
+                    "GROUP BY f.id_film " +
+                    "ORDER BY next_projection ASC ";
+
+            pstmt = connection.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Film film = read(rs);
+                film.setGeneri(getGenresForFilm(film.getIdFilm()));
+                featuredFilms.add(film);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+
+        return featuredFilms;
+    }
 }

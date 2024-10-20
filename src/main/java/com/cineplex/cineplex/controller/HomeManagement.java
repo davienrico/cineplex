@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HomeManagement {
-
 
     public static void view(HttpServletRequest request, HttpServletResponse response) {
         DAOFactory sessionDAOFactory = null;
@@ -49,8 +50,8 @@ public class HomeManagement {
             }
             request.setAttribute("loggedOn", isLoggedOn);
 
-            // Fetch all films
-            fetchAndSetFilms(request, daoFactory);
+            // Fetch featured films
+            fetchAndSetFeaturedFilms(request, daoFactory);
 
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
@@ -122,7 +123,7 @@ public class HomeManagement {
                     );
                 }
 
-                fetchAndSetFilms(request, daoFactory);
+                fetchAndSetFeaturedFilms(request, daoFactory);
                 request.setAttribute("loginSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } else {
@@ -235,7 +236,7 @@ public class HomeManagement {
                         newUtente.getTipo()
                 );
 
-                fetchAndSetFilms(request, daoFactory);
+                fetchAndSetFeaturedFilms(request, daoFactory);
                 request.setAttribute("signupSuccess", true);
                 request.setAttribute("viewUrl", "homeManagement/view");
             } catch (Exception e) {
@@ -277,16 +278,13 @@ public class HomeManagement {
 
             UtenteDAO sessionUserDAO = sessionDAOFactory.getUtenteDAO();
 
-            // Delete the user cookie
             sessionUserDAO.delete(null);
 
-            // Manually delete the LoggedUser cookie
             Cookie cookie = new Cookie("LoggedUser", "");
             cookie.setMaxAge(0);
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            // Invalidate the session
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
@@ -294,17 +292,14 @@ public class HomeManagement {
 
             sessionDAOFactory.commitTransaction();
 
-            // Clear session attributes
             request.setAttribute("loggedOn", false);
             request.setAttribute("loggedUser", null);
 
-            // Fetch films after logout
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
             daoFactory.beginTransaction();
-            fetchAndSetFilms(request, daoFactory);
+            fetchAndSetFeaturedFilms(request, daoFactory);
             daoFactory.commitTransaction();
 
-            // Set view url for redirection
             request.setAttribute("viewUrl", "homeManagement/view");
 
         } catch (Exception e) {
@@ -337,5 +332,54 @@ public class HomeManagement {
         FilmDAO filmDAO = daoFactory.getFilmDAO();
         List<Film> films = filmDAO.findAll();
         request.setAttribute("films", films);
+    }
+
+    private static void fetchAndSetFeaturedFilms(HttpServletRequest request, DAOFactory daoFactory) throws Exception {
+        FilmDAO filmDAO = daoFactory.getFilmDAO();
+        List<Film> featuredFilms = filmDAO.findFeaturedFilms(); // You'll need to implement this method in FilmDAO
+        request.setAttribute("featuredFilms", featuredFilms);
+    }
+
+    public static void searchFilms(HttpServletRequest request, HttpServletResponse response) {
+        DAOFactory daoFactory = null;
+        String applicationMessage = null;
+
+        try {
+            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
+            daoFactory.beginTransaction();
+
+            FilmDAO filmDAO = daoFactory.getFilmDAO();
+
+            String title = request.getParameter("title");
+            String dateStr = request.getParameter("date");
+            Date date = null;
+            if (dateStr != null && !dateStr.isEmpty()) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                date = sdf.parse(dateStr);
+            }
+
+            List<Film> searchResults = filmDAO.searchFilms(title, date);
+
+            fetchAndSetFeaturedFilms(request, daoFactory);
+
+            daoFactory.commitTransaction();
+
+            request.setAttribute("films", searchResults);
+            request.setAttribute("searchPerformed", true);
+            request.setAttribute("viewUrl", "homeManagement/view");
+
+        } catch (Exception e) {
+            LogService.getApplicationLogger().log(Level.SEVERE, "Controller Error", e);
+            try {
+                if (daoFactory != null) daoFactory.rollbackTransaction();
+            } catch (Throwable t) {
+            }
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (daoFactory != null) daoFactory.closeTransaction();
+            } catch (Throwable t) {
+            }
+        }
     }
 }

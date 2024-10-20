@@ -24,4 +24,9 @@ public interface FilmDAO {
     List<Film> FindByTitolo(String query) throws Exception;
 
     public List<Film> FindByGenere(List<Genere> generi);
+
+    List<Film> searchFilms(String title, Date date) throws Exception;
+
+    List<Film> findFeaturedFilms() throws Exception;
+
 }
